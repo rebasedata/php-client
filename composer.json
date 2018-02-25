@@ -1,0 +1,9 @@
+{
+    "name": "rebasedata/php-client",
+    "type": "library",
+    "description": "The RebaseData PHP-client allows to convert databases with PHP",
+    "require": {
+        "php": ">=5.5"
+    },
+    "license": "MIT"
+}
