@@ -39,7 +39,7 @@ The recommended method to install is through [Composer](http://getcomposer.org).
 
     use RebaseData\Client;
 
-    $client = new Client('customerKey');
+    $client = new Client('freemium');
     ```
 You can find out more about Composer at [getcomposer.org](http://getcomposer.org).
 
@@ -51,11 +51,10 @@ The following code is an example on how to convert a Microsoft Access ACCDB file
 
 ```php
 $inputFiles = ['/tmp/access.accdb'];
-$outputFile = '/tmp/output.zip';
 
-$client->convertAndReceiveZip($inputFiles, $outputFile);
+$outputFile = $client->convertAndReceiveZip($inputFiles);
 
-echo "Conversion successful, check out /tmp/output.zip!\n";
+echo "Conversion successful, check out $outputFile!\n";
 ```
 
 
