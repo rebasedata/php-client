@@ -47,9 +47,13 @@ You can find out more about Composer at [getcomposer.org](http://getcomposer.org
 Example
 -------
 
-The following code is an example on how to convert a Microsoft Access ACCDB file to a ZIP-archive of CSV files.
+The following code is an example on how to convert a Microsoft Access ACCDB file to a ZIP-archive of CSV files. You can replace 'freemium' with the Customer Key that you purchased.
 
 ```php
+use RebaseData\Client;
+
+$client = new Client('freemium');
+
 $inputFiles = ['/tmp/access.accdb'];
 
 $outputFile = $client->convertAndReceiveZip($inputFiles);
