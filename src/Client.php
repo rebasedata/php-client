@@ -48,6 +48,8 @@ class Client
     {
         $this->validateInputFiles($inputFiles);
 
+        $options['customerKey'] = $this->apiKey;
+
         $parts = [];
         foreach ($inputFiles as $inputFile) {
             $parts[] = [
