@@ -4,7 +4,9 @@
     "description": "RebaseData API client for PHP",
     "require": {
         "php": ">=5.5",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "league/csv": "^8.0",
+        "phpunit/phpunit": "^6.5"
     },
     "license": "MIT",
     "autoload": {
