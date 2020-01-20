@@ -3,6 +3,7 @@
 namespace RebaseData\Database\Table;
 
 use League\Csv\Reader;
+use League\Csv\Statement; // league/csv v9
 use RebaseData\Database\Table\Column\Column;
 
 class Table
@@ -51,7 +52,12 @@ class Table
 
         $header = $reader->fetchOne();
 
-        $rows = $reader->setOffset(1)->fetchAll();
+        if (method_exists($reader, 'setOffset')) { // league/csv v8
+            $rows = $reader->setOffset(1)->fetchAll();
+        } else {
+            $stmt = (new Statement())->offset(1); // league/csv v9
+            $rows = $stmt->process($reader);
+        }
 
         $associativeRows = [];
         foreach ($rows as $row) {
@@ -72,7 +78,12 @@ class Table
 
         $header = $reader->fetchOne();
 
-        $iterator = $reader->setOffset(1)->fetchAssoc($header);
+        if (method_exists($reader, 'setOffset')) { // league/csv v8
+            $iterator = $reader->setOffset(1)->fetchAssoc($header);
+        } else {
+            $reader->setHeaderOffset(0);
+            $iterator = $reader->getRecords();
+        }
 
         return $iterator;
     }
