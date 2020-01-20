@@ -37,4 +37,20 @@ class ConverterTest extends TestCase
 
         DeleteDirectoryService::execute($targetDirectory);
     }
+
+    public function testConvertToFormatAndSaveAsZipFile()
+    {
+        $inputFile = new InputFile(dirname(__FILE__).'/../../samples/access.accdb');
+        $inputFiles = [$inputFile];
+
+        $zipFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'converter-test-convert-to-format-'.microtime(true).'.zip';
+
+        $converter = new Converter();
+        $converter->convertToFormatAndSaveAsZipFile($inputFiles, 'mysql', $zipFile);
+
+        $this->assertFileExists($zipFile);
+        $this->assertEquals('PK', substr(file_get_contents($zipFile), 0, 2));
+
+        unlink($zipFile);
+    }
 }

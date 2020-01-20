@@ -71,8 +71,6 @@ class Converter
             throw new InvalidArgumentException('Target directory '.$targetDirectory.' must exist!');
         }
 
-        $options['outputFormat'] = $format;
-
         try {
             $conversionCacheDirectory = null;
             $conversionCacheDoneMarkerPath = null;
@@ -100,7 +98,7 @@ class Converter
 
             $temporaryZipFilePath = $workingDirectory.DIRECTORY_SEPARATOR.'convert-to-format-zip-'.$randomHash;
 
-            $this->convertToFormatAndReceiveZipFile($inputFiles, $temporaryZipFilePath, $options);
+            $this->convertToFormatAndSaveAsZipFile($inputFiles, $format, $temporaryZipFilePath, $options);
 
             $zipArchive = new ZipArchive();
             $zipArchive->open($temporaryZipFilePath);
@@ -121,13 +119,15 @@ class Converter
         }
     }
 
-    private function convertToFormatAndReceiveZipFile(array $inputFiles, $zipFile, array $options = [])
+    public function convertToFormatAndSaveAsZipFile(array $inputFiles, $format, $zipFile, array $options = [])
     {
         CheckInputFilesService::execute($inputFiles);
 
         if (file_exists($zipFile)) {
             throw new InvalidArgumentException('Zip file must not exist yet: '.$zipFile);
         }
+
+        $options['outputFormat'] = $format;
 
         if ($this->config->getApiKey()) {
             $options['customerKey'] = $this->config->getApiKey();
@@ -162,7 +162,5 @@ class Converter
 
             throw new RuntimeException($json['error']);
         }
-
-        return $zipFile;
     }
 }
