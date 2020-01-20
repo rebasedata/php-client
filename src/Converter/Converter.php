@@ -21,9 +21,13 @@ class Converter
 {
     private $config;
 
-    public function __construct()
+    public function __construct(Config $config = null)
     {
-        $this->config = new Config();
+        if ($config === null) {
+            $config = new Config();
+        }
+
+        $this->config = $config;
     }
 
     public function setConfig(Config $config)
