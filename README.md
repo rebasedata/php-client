@@ -130,6 +130,23 @@ $converter->convertToFormat($inputFiles, 'mysql', $targetDirectory);
 echo "You can find the MySQL script file (data.sql) in the following directory: $targetDirectory\n";
 ```
 
+Similarly, you can convert input files to a new format and have them stored as ZIP file:
+
+```php
+use RebaseData\InputFile\InputFile;
+use RebaseData\Converter\Converter;
+
+$inputFile = new InputFile('/tmp/access.accdb');
+$inputFiles = [$inputFile];
+
+$zipFile = '/tmp/output.zip';
+
+$converter = new Converter();
+$converter->convertToFormatAndSaveAsZipFile($inputFiles, 'mysql', $zipFile);
+
+echo "You can find the ZIP archive that contains the MySQL script file (data.sql) here: $zipFile\n";
+```
+
 By the default, the library will use the system's temporary folder as working directory. If you want to change that, you need to adjust the config:
 
  ```php
