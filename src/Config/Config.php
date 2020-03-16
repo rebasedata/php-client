@@ -6,14 +6,40 @@ use RebaseData\Exception\InvalidArgumentException;
 
 class Config
 {
+    private $protocol;
+    private $host;
     private $workingDirectory;
     private $apiKey;
     private $cacheEnabled;
     private $cacheDirectory;
+    private $useZipIfAvailable;
 
     public function __construct()
     {
+        $this->protocol = 'https';
+        $this->host = 'www.rebasedata.com';
         $this->cacheEnabled = false;
+        $this->useZipIfAvailable = true;
+    }
+
+    public function setProtocol(string $protocol)
+    {
+        $this->protocol = $protocol;
+    }
+
+    public function getProtocol() : string
+    {
+        return $this->protocol;
+    }
+
+    public function setHost(string $host) : void
+    {
+        $this->host = $host;
+    }
+
+    public function getHost() : string
+    {
+        return $this->host;
     }
 
     public function getWorkingDirectory()
@@ -82,5 +108,15 @@ class Config
         }
 
         return $this->cacheDirectory;
+    }
+
+    public function setUseZipIfAvailable(bool $useZipIfAvailable) : void
+    {
+        $this->useZipIfAvailable = $useZipIfAvailable;
+    }
+
+    public function getUseZipIfAvailable() : bool
+    {
+        return $this->useZipIfAvailable;
     }
 }

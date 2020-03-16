@@ -125,7 +125,7 @@ if (!file_exists($targetDirectory)) {
 }
 
 $converter = new Converter();
-$converter->convertToFormat($inputFiles, 'mysql', $targetDirectory);
+$converter->convertAndSaveToDirectory($inputFiles, 'mysql', $targetDirectory);
 
 echo "You can find the MySQL script file (data.sql) in the following directory: $targetDirectory\n";
 ```
@@ -142,7 +142,7 @@ $inputFiles = [$inputFile];
 $zipFile = '/tmp/output.zip';
 
 $converter = new Converter();
-$converter->convertToFormatAndSaveAsZipFile($inputFiles, 'mysql', $zipFile);
+$converter->convertAndSaveToZipFile($inputFiles, 'mysql', $zipFile);
 
 echo "You can find the ZIP archive that contains the MySQL script file (data.sql) here: $zipFile\n";
 ```
