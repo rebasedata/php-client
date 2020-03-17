@@ -2,19 +2,21 @@
 
 namespace RebaseData\Database\Table;
 
-use League\Csv\Reader;
-use League\Csv\Statement; // league/csv v9
+use Traversable;
 use RebaseData\Database\Table\Column\Column;
+use RebaseData\Service\ReadCsvService;
 
 class Table
 {
     private $name;
     private $path;
+    private $readCsvService;
 
     public function __construct($name, $path)
     {
         $this->name = $name;
         $this->path = $path;
+        $this->readCsvService = new ReadCsvService();
     }
 
     public function getName()
@@ -27,10 +29,11 @@ class Table
         copy($this->path, $destinationFilePath);
     }
 
-    public function getColumns()
+    public function getColumns() : array
     {
-        $reader = Reader::createFromPath($this->path, 'r');
-        $columnNames = $reader->fetchOne();
+        $iterator = $this->readCsvService->execute($this->path);
+
+        $columnNames = $iterator->current();
 
         $columns = [];
         foreach ($columnNames as $columnName) {
@@ -43,25 +46,23 @@ class Table
     /**
      * Returns an array of all the rows.
      * Should not be used if the file has lot of rows, because everything is loaded in memory.
+     * This is not memory-efficient.
      *
      * @return array
      */
-    public function getRowsArray()
+    public function getRowsArray() : array
     {
-        $reader = Reader::createFromPath($this->path, 'r');
+        $iterator = $this->readCsvService->execute($this->path);
 
-        $header = $reader->fetchOne();
+        $header = $iterator->current();
 
-        if (method_exists($reader, 'setOffset')) { // league/csv v8
-            $rows = $reader->setOffset(1)->fetchAll();
-        } else {
-            $stmt = (new Statement())->offset(1); // league/csv v9
-            $rows = $stmt->process($reader);
-        }
+        $iterator->next();
 
         $associativeRows = [];
-        foreach ($rows as $row) {
-            $associativeRows[] = array_combine($header, $row);
+        while ($iterator->current()) {
+            $associativeRows[] = array_combine($header, $iterator->current());
+
+            $iterator->next();
         }
 
         return $associativeRows;
@@ -72,19 +73,18 @@ class Table
      *
      * @return Traversable
      */
-    public function getRowsIterator()
+    public function getRowsIterator() : Traversable
     {
-        $reader = Reader::createFromPath($this->path, 'r');
+        $iterator = $this->readCsvService->execute($this->path);
 
-        $header = $reader->fetchOne();
+        $header = $iterator->current();
 
-        if (method_exists($reader, 'setOffset')) { // league/csv v8
-            $iterator = $reader->setOffset(1)->fetchAssoc($header);
-        } else {
-            $reader->setHeaderOffset(0);
-            $iterator = $reader->getRecords();
+        $iterator->next();
+
+        while ($iterator->current()) {
+            yield array_combine($header, $iterator->current());
+
+            $iterator->next();
         }
-
-        return $iterator;
     }
 }
