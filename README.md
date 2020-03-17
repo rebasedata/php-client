@@ -5,6 +5,11 @@ Introduction
 
 This library allows to read and convert various database formats in PHP using the RebaseData API. When processing a database, the database is first sent to the secure RebaseData servers which then return the converted data. See below for a list of examples.
 
+Dependencies
+------------
+
+The library does not have any dependencies.
+
 Installation
 ------------
 
