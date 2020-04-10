@@ -3,8 +3,8 @@
 namespace RebaseData\Service;
 
 use Traversable;
+use RebaseData\Exception\InvalidArgumentException;
 use RebaseData\Exception\RuntimeException;
-use Webmozart\Assert\Assert;
 
 /**
  * Class ReadCsvService
@@ -16,7 +16,9 @@ class ReadCsvService
 {
     public function execute(string $filePath) : Traversable
     {
-        Assert::fileExists($filePath);
+        if (!file_exists($filePath)) {
+            throw new InvalidArgumentException('File does not exist: '.$filePath);
+        }
 
         $h = fopen($filePath, 'r');
         if ($h === false) {
