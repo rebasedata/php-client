@@ -3,7 +3,7 @@
 Introduction
 ------------
 
-This library allows to read and convert various database formats in PHP using the RebaseData API. When processing a database, the database is first sent to the secure RebaseData servers which then return the converted data. See below for a list of examples.
+This library allows to read and convert various database formats in PHP using the RebaseData API. When processing a database, the database is first sent to the secure RebaseData servers which then return the converted data. Below you will find several examples.
 
 Dependencies
 ------------
@@ -37,6 +37,23 @@ To install this library, you need [Composer](http://getcomposer.org).
 Examples
 --------
 
+At first, you need to define one or more input files for the database conversion. 
+
+```php
+use RebaseData\InputFile\InputFile;
+
+$inputFile = new InputFile('/tmp/access.accdb');
+```
+
+It's also possible to define a name for the input file that is different than the path.
+The file's name and extension are important for the conversion.
+
+```php
+use RebaseData\InputFile\InputFile;
+
+$inputFile = new InputFile('/tmp/a1b2c3e4', 'access.accdb');
+```
+
 List all tables of an ACCDB file.
 
 ```php
@@ -48,6 +65,24 @@ $inputFiles = [$inputFile];
 
 $converter = new Converter();
 $database = $converter->convertToDatabase($inputFiles);
+$tables = $database->getTables();
+
+foreach ($tables as $table) {
+    echo "Got table: ".$table->getName()."\n";
+}
+```
+
+List all tables of a password-protected MSSQL BAK file.
+
+```php
+use RebaseData\InputFile\InputFile;
+use RebaseData\Converter\Converter;
+
+$inputFile = new InputFile('/tmp/backup.bak');
+$inputFiles = [$inputFile];
+
+$converter = new Converter();
+$database = $converter->convertToDatabase($inputFiles, ['password' => 'value']);
 $tables = $database->getTables();
 
 foreach ($tables as $table) {
