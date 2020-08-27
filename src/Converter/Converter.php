@@ -140,15 +140,6 @@ class Converter
             $options['customerKey'] = $this->config->getApiKey();
         }
 
-        $parts = [];
-        foreach ($inputFiles as $inputFile) {
-            $parts[] = [
-                'name' => 'files[]',
-                'filename' => basename($inputFile->getName()),
-                'contents' => fopen($inputFile->getPath(), 'r'),
-            ];
-        }
-
         $queryString = '';
         if (count($options) > 0) {
             $queryString = '?'.http_build_query($options);
