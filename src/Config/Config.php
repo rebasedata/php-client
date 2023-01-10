@@ -13,6 +13,7 @@ class Config
     private $cacheEnabled;
     private $cacheDirectory;
     private $useZipIfAvailable;
+    private $debugMode;
 
     public function __construct()
     {
@@ -20,6 +21,7 @@ class Config
         $this->host = 'www.rebasedata.com';
         $this->cacheEnabled = false;
         $this->useZipIfAvailable = true;
+        $this->debugMode = false;
     }
 
     public function setProtocol(string $protocol)
@@ -27,22 +29,22 @@ class Config
         $this->protocol = $protocol;
     }
 
-    public function getProtocol() : string
+    public function getProtocol(): string
     {
         return $this->protocol;
     }
 
-    public function setHost(string $host) : void
+    public function setHost(string $host): void
     {
         $this->host = $host;
     }
 
-    public function getHost() : string
+    public function getHost(): string
     {
         return $this->host;
     }
 
-    public function getWorkingDirectory()
+    public function getWorkingDirectory(): string
     {
         if ($this->workingDirectory === null) {
             $defaultWorkingDirectory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'rebasedata-working-dir';
@@ -78,10 +80,10 @@ class Config
 
     public function setCacheEnabled($cacheEnabled)
     {
-        $this->cacheEnabled = (bool) $cacheEnabled;
+        $this->cacheEnabled = (bool)$cacheEnabled;
     }
 
-    public function getCacheEnabled()
+    public function getCacheEnabled(): bool
     {
         return $this->cacheEnabled;
     }
@@ -95,7 +97,7 @@ class Config
         $this->cacheDirectory = $cacheDirectory;
     }
 
-    public function getCacheDirectory()
+    public function getCacheDirectory(): string
     {
         if ($this->cacheDirectory === null) {
             $defaultCacheDirectory = $this->getWorkingDirectory().DIRECTORY_SEPARATOR.'cache';
@@ -110,13 +112,23 @@ class Config
         return $this->cacheDirectory;
     }
 
-    public function setUseZipIfAvailable(bool $useZipIfAvailable) : void
+    public function setUseZipIfAvailable(bool $useZipIfAvailable): void
     {
         $this->useZipIfAvailable = $useZipIfAvailable;
     }
 
-    public function getUseZipIfAvailable() : bool
+    public function getUseZipIfAvailable(): bool
     {
         return $this->useZipIfAvailable;
+    }
+
+    public function setDebugMode(bool $debugMode): void
+    {
+        $this->debugMode = $debugMode;
+    }
+
+    public function getDebugMode(): bool
+    {
+        return $this->debugMode;
     }
 }

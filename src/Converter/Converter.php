@@ -122,6 +122,11 @@ class Converter
         $this->doConversion($inputFiles, $format, $zipFilePath, null, $options);
     }
 
+    /**
+     * @throws LogicException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
     private function doConversion(array $inputFiles, string $format, ?string $zipFilePath, ?string $targetDirectory, array $options = [])
     {
         CheckInputFilesService::execute($inputFiles);
@@ -190,6 +195,10 @@ class Converter
         // Send request body
         foreach ($inputFiles as $inputFile) {
             $name = basename($inputFile->getName());
+            if ($this->config->getDebugMode()) {
+                $humanSize = $this->humanFileSize(filesize($inputFile->getPath()));
+                echo "\n\n[DEBUG] *** Processing file {$inputFile->getName()} [{$humanSize}] ***";
+            }
 
             $nameLength = pack('J', strlen($name));
 
@@ -206,6 +215,11 @@ class Converter
 
                 fwrite($socket, $chunk);
             }
+
+            if ($this->config->getDebugMode()) {
+                echo "\n[DEBUG] *** File {$inputFile->getName()} uploaded. ***";
+            }
+
             fclose($inputFileHandle);
         }
 
@@ -244,6 +258,10 @@ class Converter
 
             $json = json_decode($responseData, true);
             throw new RuntimeException('Got error from API: '.$json['error']);
+        }
+
+        if ($this->config->getDebugMode()) {
+            echo "\n\n[DEBUG] *** Handling response from {$this->config->getHost()} ***";
         }
 
         // Handle response body
@@ -352,5 +370,47 @@ class Converter
     public function convertToFormatAndSaveAsZipFile(array $inputFiles, string $format, string $zipFilePath, array $options = []) : void
     {
         $this->doConversion($inputFiles, $format, $zipFilePath, null, $options);
+    }
+
+    /**
+     * Converts bytes into human-readable file size.
+     *
+     * @param string $bytes
+     * @return string human-readable file size (2,87 МB)
+     */
+    function humanFileSize(string $bytes): string
+    {
+        $bytes = floatval($bytes);
+        $unitMap = [
+            [
+                "unit" => "TB",
+                "value" => pow(1024, 4)
+            ],
+            [
+                "unit" => "GB",
+                "value" => pow(1024, 3)
+            ],
+            [
+                "unit" => "MB",
+                "value" => pow(1024, 2)
+            ],
+            [
+                "unit" => "KB",
+                "value" => 1024
+            ],
+            [
+                "unit" => "B",
+                "value" => 1
+            ],
+        ];
+
+        foreach ($unitMap as $item) {
+            if ($bytes >= $item["value"]) {
+                $result = round($bytes / $item["value"], 2). " " . $item["unit"];
+                break;
+            }
+        }
+
+        return $result ?? $bytes;
     }
 }
