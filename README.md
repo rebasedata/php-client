@@ -223,8 +223,19 @@ You can pass it like this:
  
  $converter = new Converter($config);
  ```
- 
 
+To Debug the file handling (upload and download) you can activate the debug mode. By default Debug mode is disabled.
+You can pass it like this:
+
+ ```php
+ use RebaseData\Config\Config;
+ use RebaseData\Converter\Converter;
+ 
+ $config = new Config();
+ $config->setDebugMode(true);
+ 
+ $converter = new Converter($config);
+ ```
 
 Tests
 -----
