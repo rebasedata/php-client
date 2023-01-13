@@ -205,13 +205,26 @@ class Converter
             fwrite($socket, $nameLength);
             fwrite($socket, $name);
 
-            $contentLength = pack('J', filesize($inputFile->getPath()));
+            $fileSize = filesize($inputFile->getPath());
+            $contentLength = pack('J', $fileSize);
 
             fwrite ($socket, $contentLength);
 
+            $currentTransferSize = 0;
             $inputFileHandle = fopen($inputFile->getPath(), 'r');
+            $chunkSize = $fileSize > 10000 ? round($fileSize / 1000) : 1;
+
             while (!feof($inputFileHandle)) {
                 $chunk = fread($inputFileHandle, 2048);
+
+                if ($this->config->getDebugMode() && $chunkSize > 1) {
+                    $currentTransferSize += 2048;
+                    $percentage = round($currentTransferSize / $fileSize * 100);
+
+                    if ($currentTransferSize % $chunkSize === 0 && $percentage < 100) {
+                        echo "\n        *** uploading {$percentage}% ***";
+                    }
+                }
 
                 fwrite($socket, $chunk);
             }
